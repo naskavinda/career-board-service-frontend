@@ -69,4 +69,18 @@ export class LoginComponent {
       });
     }
   }
+
+  get isUsernameValid() {
+    return this.isFieldValid('username');
+  }
+
+  get isPasswordValid() {
+    return this.isFieldValid('password');
+  }
+
+  isFieldValid(field: string) {
+    return (
+      this.loginForm.get(field)?.invalid && this.loginForm.get(field)?.touched
+    );
+  }
 }

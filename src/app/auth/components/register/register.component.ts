@@ -138,4 +138,55 @@ export class RegisterComponent {
     }
     return { passwordMismatch: true };
   }
+
+  get isUsernameInValid() {
+    return this.isFieldValid('username');
+  }
+
+  get isFirstNameInValid() {
+    return this.isFieldValid('firstName');
+  }
+
+  get isLastNameInValid() {
+    return this.isFieldValid('lastName');
+  }
+
+  get isPasswordInValid() {
+    return (
+      this.getPasswordsFormControl().get('password')?.invalid &&
+      this.getPasswordsFormControl().get('password')?.touched
+    );
+  }
+
+  get isConfirmPasswordInValid() {
+    return (
+      this.getPasswordsFormControl().get('confirmPassword')?.invalid &&
+      this.getPasswordsFormControl().get('confirmPassword')?.touched
+    );
+  }
+
+  get isPasswordLengthInValid() {
+    return (
+      this.getPasswordsFormControl().get('password')?.hasError('minlength') ||
+      this.getPasswordsFormControl().get('password')?.hasError('maxlength')
+    );
+  }
+
+  get isConfirmPasswordLengthInValid() {
+    return (
+      this.getPasswordsFormControl()
+        .get('confirmPassword')
+        ?.hasError('minlength') ||
+      this.getPasswordsFormControl()
+        .get('confirmPassword')
+        ?.hasError('maxlength')
+    );
+  }
+
+  isFieldValid(field: string) {
+    return (
+      this.registerForm.get(field)?.invalid &&
+      this.registerForm.get(field)?.touched
+    );
+  }
 }
