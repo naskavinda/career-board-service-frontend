@@ -9,26 +9,27 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Username</mat-label>
           <input matInput formControlName="username" placeholder="Enter your username">
-          <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
-            Username is required
-          </mat-error>
+          @if (loginForm.get('username')?.hasError('required')) {
+            <mat-error>
+              Username is required
+            </mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Password</mat-label>
           <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          @if (loginForm.get('password')?.hasError('required')) {
+            <mat-error>
+              Password is required
+            </mat-error>
+          }
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
             <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-            Password is required
-          </mat-error>
-          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-            Password must be at least 8 characters
-          </mat-error>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit" class="full-width">
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loginForm.invalid">
           Login
         </button>
       </form>

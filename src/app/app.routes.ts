@@ -8,12 +8,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // canActivate: [publicGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
-    // canActivate: [publicGuard],
   },
   {
     path: 'unauthorized',
@@ -25,6 +23,7 @@ export const routes: Routes = [
       import('./dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
+    canActivate: [authGuard],
     children: [
       {
         path: '',

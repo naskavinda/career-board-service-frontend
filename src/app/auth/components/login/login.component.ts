@@ -33,8 +33,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+export class LoginComponent {
+  loginForm: FormGroup;
   hidePassword = true;
 
   constructor(
@@ -42,12 +42,10 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required]],
     });
   }
 

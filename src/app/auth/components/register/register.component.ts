@@ -78,7 +78,6 @@ export class RegisterComponent {
           validators: this.passwordMatchValidator,
         }
       ),
-      // role: ['USER', [Validators.required]],
     });
   }
 
