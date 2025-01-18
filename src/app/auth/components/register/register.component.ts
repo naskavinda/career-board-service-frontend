@@ -19,6 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterRequest } from '../../models/auth.model';
+import { NotificationService } from '../../../services/notification.service';
+import { formatErrorMessage } from '../../../utils/string-formatter';
 
 @Component({
   selector: 'app-register',
@@ -49,7 +51,7 @@ export class RegisterComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private notificationService: NotificationService
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -107,20 +109,20 @@ export class RegisterComponent {
       this.authService.register(registerRequest).subscribe({
         next: (response) => {
           if (response.success) {
-            this.snackBar.open('Registration successful', 'Close', {
-              duration: 3000,
-            });
+            this.notificationService.showSuccess('Registration successful');
             this.router.navigate(['/login']);
           } else {
-            this.snackBar.open(response.message, 'Close', { duration: 3000 });
+            const errorMessage = formatErrorMessage(
+              response.message || 'REGISTRATION_FAILED'
+            );
+            this.notificationService.showError(errorMessage);
           }
         },
         error: (error) => {
-          this.snackBar.open(
-            'Registration failed. Please try again.',
-            'Close',
-            { duration: 3000 }
+          const errorMessage = formatErrorMessage(
+            error.message || 'Registration failed. Please try again.'
           );
+          this.notificationService.showError(errorMessage);
         },
       });
     } else {

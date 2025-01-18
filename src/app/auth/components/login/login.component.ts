@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NotificationService } from '../../../services/notification.service';
+import { formatErrorMessage } from '../../../utils/string-formatter';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +35,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   hidePassword = true;
 
@@ -41,11 +43,21 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
+    });
+  }
+
+  ngOnInit(): void {
+    this.authService.isAuthenticated$.subscribe({
+      next: (isAuthenticated) => {
+        if (isAuthenticated) {
+          this.router.navigate(['/dashboard']);
+        }
+      },
     });
   }
 
@@ -54,17 +66,19 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           if (response.success) {
-            this.authService.setToken(response.payload.token);
-            this.snackBar.open('Login successful', 'Close', { duration: 3000 });
+            const successMessage = 'Login successful';
+            this.notificationService.showSuccess(successMessage);
             this.router.navigate(['/dashboard']);
           } else {
-            this.snackBar.open(response.message, 'Close', { duration: 3000 });
+            const errorMessage = formatErrorMessage(
+              response.message || 'LOGIN_FAILED'
+            );
+            this.notificationService.showError(errorMessage);
           }
         },
         error: (error) => {
-          this.snackBar.open('Login failed. Please try again.', 'Close', {
-            duration: 3000,
-          });
+          const errorMessage = 'Login failed. Please try again.';
+          this.notificationService.showError(error.message || errorMessage);
         },
       });
     }
