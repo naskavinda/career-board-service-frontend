@@ -43,6 +43,13 @@ export const routes: Routes = [
           role: 'ADMIN',
         },
       },
+      {
+        path: 'post-timeline/:userId',
+        loadComponent: () =>
+          import('./dashboard/pages/components/post-timeline/post-timeline.component').then(
+            (m) => m.PostTimelineComponent
+          ),
+      },
       // {
       //   path: 'users-timeline',
       //   loadComponent: () =>

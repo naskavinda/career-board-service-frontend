@@ -1,4 +1,4 @@
-<mat-card class="user-card">
+<mat-card class="user-card" (click)="navigateToPostTimeline()">
   <mat-card-header>
     <div class="avatar" mat-card-avatar>
       {{(user().firstName.charAt(0) || '') + (user().lastName.charAt(0) || '') | uppercase}}

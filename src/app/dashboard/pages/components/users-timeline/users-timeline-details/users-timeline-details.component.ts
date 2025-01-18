@@ -1,7 +1,8 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, inject, input, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { User } from '../../../models/user.model';
 
 @Component({
@@ -13,8 +14,13 @@ import { User } from '../../../models/user.model';
 })
 export class UsersTimelineDetailsComponent {
   user = input.required<User>();
+  router = inject(Router);
 
   getPostCount(): number {
     return this.user().posts.length;
+  }
+
+  navigateToPostTimeline() {
+    this.router.navigateByUrl(`/dashboard/post-timeline/${this.user().userId}`);
   }
 }
