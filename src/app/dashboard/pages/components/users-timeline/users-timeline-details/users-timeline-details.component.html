@@ -1,0 +1,26 @@
+<mat-card class="user-card">
+  <mat-card-header>
+    <div class="avatar" mat-card-avatar>
+      {{(user().firstName.charAt(0) || '') + (user().lastName.charAt(0) || '') | uppercase}}
+    </div>
+    <div class="header-content">
+      <mat-card-title>{{user().firstName}} {{user().lastName}}</mat-card-title>
+      <mat-card-subtitle>{{user().username}}</mat-card-subtitle>
+    </div>
+    <div class="status-badge" [class.active]="user().active">
+      {{user().active ? 'Active' : 'Inactive'}}
+    </div>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="user-details">
+      <div class="stats">
+        <div class="stat-item">
+          <mat-icon>article</mat-icon>
+          <span class="stat-value">{{getPostCount()}}</span>
+          <span class="stat-label">Posts</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

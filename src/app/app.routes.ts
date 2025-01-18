@@ -43,6 +43,17 @@ export const routes: Routes = [
           role: 'ADMIN',
         },
       },
+      // {
+      //   path: 'users-timeline',
+      //   loadComponent: () =>
+      //     import(
+      //       './dashboard/pages/components/users-timeline/users-timeline.component'
+      //     ).then((m) => m.UsersTimelineComponent),
+      //   canActivate: [authGuard],
+      //   data: {
+      //     role: 'ADMIN',
+      //   },
+      // },
     ],
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
