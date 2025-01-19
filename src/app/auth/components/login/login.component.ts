@@ -73,12 +73,14 @@ export class LoginComponent implements OnInit {
             const errorMessage = formatErrorMessage(
               response.message || 'LOGIN_FAILED'
             );
-            this.notificationService.showError(errorMessage);
+            // this.notificationService.showError(errorMessage);
           }
         },
         error: (error) => {
-          const errorMessage = 'Login failed. Please try again.';
-          this.notificationService.showError(error.message || errorMessage);
+          const errorMessage =
+            formatErrorMessage(error.error?.message) ||
+            'Login failed. Please try again.';
+          this.notificationService.showError(errorMessage);
         },
       });
     }

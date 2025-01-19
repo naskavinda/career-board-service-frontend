@@ -26,10 +26,8 @@ export class PostListComponent implements OnInit {
     this.postService.getUserPosts(this.userId()).subscribe({
       next: (posts: Post[]) => {
         this.posts = posts || [];
-        console.log('Posts loaded:', this.posts);
       },
       error: (error: any) => {
-        console.error('Error loading posts:', error);
         this.posts = [];
       },
     });

@@ -18,7 +18,6 @@ export class PostComponent {
   constructor(private router: Router) {}
 
   navigateToPost() {
-    console.log(this.post.postId);
     this.router.navigate(['/dashboard/post', this.post.postId]);
   }
 }

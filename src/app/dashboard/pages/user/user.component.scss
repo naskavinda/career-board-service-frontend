@@ -1,22 +1,5 @@
-.admin-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-  box-sizing: border-box;
-  overflow-x: hidden;
-
-  app-users-timeline {
-    width: 66.67%; 
-    max-width: 1200px; 
-    box-sizing: border-box;
-  }
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-    
-    app-users-timeline {
-      width: 100%; 
-    }
-  }
+.post-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
 }

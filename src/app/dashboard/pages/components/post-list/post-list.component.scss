@@ -1,0 +1,52 @@
+
+  .post-card {
+    margin-bottom: 20px;
+
+    mat-card-header {
+      margin-bottom: 16px;
+    }
+
+    mat-card-content {
+      padding: 16px 0;
+    }
+  }
+
+  .empty-state {
+    background: white;
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 500px;
+
+    .empty-state-icon {
+      margin-bottom: 1.5rem;
+      color: #6b7280;
+
+      i {
+        opacity: 0.8;
+      }
+    }
+
+    .empty-state-title {
+      color: #374151;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state-message {
+      color: #6b7280;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+
+  .no-posts {
+    text-align: center;
+    color: #5f6368;
+    font-size: 1rem;
+    padding: 2rem;
+    margin: 0;
+  }
