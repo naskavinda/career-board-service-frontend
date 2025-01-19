@@ -1,12 +1,19 @@
-<mat-card class="post-card" appearance="outlined" (click)="navigateToPost()" style="cursor: pointer;">
+<mat-card
+  class="post-card"
+  appearance="outlined"
+  (click)="navigateToPost()"
+  style="cursor: pointer"
+>
   <mat-card-header>
-    <div mat-card-avatar class="user-avatar">{{ post.username[0] | uppercase }}</div>
+    <div mat-card-avatar class="user-avatar">
+      {{ post.username[0] | uppercase }}
+    </div>
     <div class="header-content">
       <mat-card-title>{{ post.title }}</mat-card-title>
       <mat-card-subtitle class="post-meta">
         <span class="username">{{ post.username }}</span>
         <span class="dot-separator">•</span>
-        <span class="timestamp">{{ post.createdAt | date:'MMM d, y' }}</span>
+        <span class="timestamp">{{ post.createdAt | date : "MMM d, y" }}</span>
       </mat-card-subtitle>
     </div>
   </mat-card-header>

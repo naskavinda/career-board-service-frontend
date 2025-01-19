@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostTimelineDetailsComponent } from './post-timeline-details.component';
+import { PostComponent } from './post.component';
 
 describe('PostTimelineDetailsComponent', () => {
-  let component: PostTimelineDetailsComponent;
-  let fixture: ComponentFixture<PostTimelineDetailsComponent>;
+  let component: PostComponent;
+  let fixture: ComponentFixture<PostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PostTimelineDetailsComponent]
-    })
-    .compileComponents();
+      imports: [PostComponent],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(PostTimelineDetailsComponent);
+    fixture = TestBed.createComponent(PostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

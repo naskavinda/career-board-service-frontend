@@ -46,7 +46,7 @@ export const routes: Routes = [
       {
         path: 'post-timeline/:userId',
         loadComponent: () =>
-          import('./dashboard/pages/post-timeline/post-timeline.component').then(
+          import('./dashboard/pages/components/post-timeline/post-timeline.component').then(
             (m) => m.PostTimelineComponent
           ),
       },
