@@ -50,6 +50,13 @@ export const routes: Routes = [
             (m) => m.PostTimelineComponent
           ),
       },
+      {
+        path: 'post/:id',
+        loadComponent: () =>
+          import('./dashboard/pages/post-details/post-details.component').then(
+            (m) => m.PostDetailsComponent
+          ),
+      },
       // {
       //   path: 'users-timeline',
       //   loadComponent: () =>

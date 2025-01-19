@@ -1,4 +1,4 @@
-<mat-card class="post-card" appearance="outlined">
+<mat-card class="post-card" appearance="outlined" (click)="navigateToPost()" style="cursor: pointer;">
   <mat-card-header>
     <div mat-card-avatar class="user-avatar">{{ post.username[0] | uppercase }}</div>
     <div class="header-content">
