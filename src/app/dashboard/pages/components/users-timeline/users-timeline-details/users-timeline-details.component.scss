@@ -49,16 +49,23 @@
       }
     }
 
-    .status-badge {
+    .role-badge {
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 500;
-      background-color: #ff5252;
       color: white;
-      
-      &.active {
-        background-color: #4caf50;
+
+      &.admin {
+        background-color: #FF5252; // Red for admin
+      }
+
+      &.moderator {
+        background-color: #FFA726; // Orange for moderator
+      }
+
+      &.user {
+        background-color: #4CAF50; // Green for regular user
       }
     }
   }
