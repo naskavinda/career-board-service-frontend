@@ -1,1 +1,6 @@
-<router-outlet />
+<ng-container *ngIf="isLoggedIn$ | async">
+  <app-nav-bar></app-nav-bar>
+</ng-container>
+<div class="content-container" [class.with-nav]="isLoggedIn$ | async">
+  <router-outlet></router-outlet>
+</div>

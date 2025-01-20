@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 import {
   LoginRequest,
   LoginResponse,
@@ -14,10 +15,11 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 })
 export class AuthService {
   private baseUrl = 'http://localhost:8081/api/auth';
+  private readonly TOKEN_KEY = 'auth_token';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.checkToken();
   }
 
@@ -39,11 +41,12 @@ export class AuthService {
   }
 
   setToken(token: string): void {
-    localStorage.setItem('token', token);
+    localStorage.setItem(this.TOKEN_KEY, token);
+    this.isAuthenticatedSubject.next(true);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   private checkToken(): void {
@@ -52,12 +55,13 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem(this.TOKEN_KEY);
     this.isAuthenticatedSubject.next(false);
+    this.router.navigate(['/login']);
   }
 
   isValidToken(): boolean {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(this.TOKEN_KEY);
 
     if (!token) return false;
 
@@ -66,20 +70,42 @@ export class AuthService {
     return !isExpired;
   }
 
-  getUserRole(): string[] | null {
-    const token = localStorage.getItem('token');
+  getUserRole(): string | null {
+    const token = this.getToken();
     if (!token) return null;
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.role || null;
-    } catch {
+      console.log('Decoded token:', decodedToken); // For debugging
+      
+      // Handle role as array or string
+      if (Array.isArray(decodedToken.role)) {
+        return decodedToken.role[0] || null;
+      }
+      
+      // Check common JWT role claim patterns
+      const possibleRoleClaims = [
+        decodedToken.role,
+        decodedToken.Role,
+        decodedToken.userRole,
+        decodedToken.UserRole,
+        decodedToken.roles?.[0],
+        decodedToken.Roles?.[0],
+        decodedToken['user-role'],
+        decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+      ];
+
+      const role = possibleRoleClaims.find(r => r !== undefined && r !== null);
+      console.log('Selected role:', role); // For debugging
+      return role || null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
       return null;
     }
   }
 
   getUserId(): string | null {
-    const token = localStorage.getItem('token');
+    const token = this.getToken();
     if (!token) return null;
 
     try {

@@ -46,9 +46,9 @@ export const routes: Routes = [
       {
         path: 'post-timeline/:userId',
         loadComponent: () =>
-          import('./dashboard/pages/post-timeline/post-timeline.component').then(
-            (m) => m.PostTimelineComponent
-          ),
+          import(
+            './dashboard/pages/post-timeline/post-timeline.component'
+          ).then((m) => m.PostTimelineComponent),
       },
       {
         path: 'post/:id',
@@ -56,6 +56,17 @@ export const routes: Routes = [
           import('./dashboard/pages/post-details/post-details.component').then(
             (m) => m.PostDetailsComponent
           ),
+      },
+      {
+        path: 'user-remove',
+        loadComponent: () =>
+          import('./dashboard/pages/user-remove/user-remove.component').then(
+            (m) => m.UserRemoveComponent
+          ),
+        canActivate: [authGuard],
+        data: {
+          role: 'MODERATOR',
+        },
       },
       // {
       //   path: 'users-timeline',

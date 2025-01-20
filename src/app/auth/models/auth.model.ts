@@ -8,6 +8,7 @@ export interface LoginResponse {
   message: string;
   payload: {
     token: string;
+    role: string;
   };
 }
 
