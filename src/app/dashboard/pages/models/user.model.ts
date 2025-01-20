@@ -8,5 +8,5 @@ export interface User {
   active: boolean;
   role: string;
   createdAt: string;
-  posts: Post[];
+  postCount: number;
 }

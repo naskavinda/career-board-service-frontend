@@ -16,10 +16,6 @@ export class UsersTimelineDetailsComponent {
   user = input.required<User>();
   router = inject(Router);
 
-  getPostCount(): number {
-    return this.user().posts.length;
-  }
-
   navigateToPostTimeline() {
     this.router.navigateByUrl(`/dashboard/post-timeline/${this.user().userId}`);
   }
