@@ -13,18 +13,9 @@ import { AuthService } from '../auth/services/auth.service';
 export class DashboardComponent {
   isExpanded = true;
 
-  constructor(
-    private authService: AuthService,
-    private snackBar: MatSnackBar
-  ) {}
+  constructor() {}
 
   toggleSidenav() {
     this.isExpanded = !this.isExpanded;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.snackBar.open('Logged out successfully', 'Close', { duration: 3000 });
-    window.location.href = '/login';
   }
 }

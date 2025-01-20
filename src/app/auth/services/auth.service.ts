@@ -82,22 +82,8 @@ export class AuthService {
       if (Array.isArray(decodedToken.role)) {
         return decodedToken.role[0] || null;
       }
-      
-      // Check common JWT role claim patterns
-      const possibleRoleClaims = [
-        decodedToken.role,
-        decodedToken.Role,
-        decodedToken.userRole,
-        decodedToken.UserRole,
-        decodedToken.roles?.[0],
-        decodedToken.Roles?.[0],
-        decodedToken['user-role'],
-        decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
-      ];
 
-      const role = possibleRoleClaims.find(r => r !== undefined && r !== null);
-      console.log('Selected role:', role); // For debugging
-      return role || null;
+      return decodedToken.role || null;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
