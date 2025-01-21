@@ -1,1 +1,77 @@
-<p>user-remove works!</p>
+<div class="user-table-container">
+  <div class="header">
+    <h2>User Management</h2>
+    <div class="user-count">
+      Total Users: {{users.length}}
+    </div>
+  </div>
+  
+  <div class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="users">
+      <!-- User ID Column -->
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let user">#{{user.userId}}</td>
+      </ng-container>
+
+      <!-- Username Column -->
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let user">
+          <div class="username-cell">
+            <!-- <div class="user-avatar">{{user.firstName[0]}}{{user.lastName[0]}}</div> -->
+            <span>{{user.username}}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- First Name Column -->
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>First Name</th>
+        <td mat-cell *matCellDef="let user">{{user.firstName}}</td>
+      </ng-container>
+
+      <!-- Last Name Column -->
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Last Name</th>
+        <td mat-cell *matCellDef="let user">{{user.lastName}}</td>
+      </ng-container>
+
+      <!-- Role Column -->
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Role</th>
+        <td mat-cell *matCellDef="let user">
+          <span class="role-badge" [class]="user.role.toLowerCase()">
+            {{user.role}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Post Count Column -->
+      <ng-container matColumnDef="postCount">
+        <th mat-header-cell *matHeaderCellDef>Posts</th>
+        <td mat-cell *matCellDef="let user">
+          <span class="post-count" [class.has-posts]="user.postCount > 0">
+            {{user.postCount}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let user">
+          <button mat-icon-button color="warn" (click)="deleteUser(user)" 
+                  [disabled]="!user.active"
+                  [matTooltip]="!user.active ? 'User already deleted' : 'Delete user'"
+                  class="delete-button">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
