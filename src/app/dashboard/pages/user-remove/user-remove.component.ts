@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmationDialogComponent } from './delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
+import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-remove',
@@ -25,29 +27,41 @@ import { User } from '../models/user.model';
   templateUrl: './user-remove.component.html',
   styleUrls: ['./user-remove.component.scss']
 })
-export class UserRemoveComponent implements OnInit {
+export class UserRemoveComponent implements OnInit, OnDestroy {
   users: User[] = [];
   displayedColumns: string[] = ['userId', 'username', 'firstName', 'lastName', 'role', 'postCount', 'actions'];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.loadUsers();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadUsers() {
-    this.userService.fetchUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-      },
-      error: (error) => {
-        this.snackBar.open('Error loading users', 'Close', { duration: 3000 });
-      }
-    });
+    this.userService.fetchUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users) => {
+          this.users = users;
+        },
+        error: (error) => {
+          this.snackBar.open(error, 'Close', { duration: 3000 });
+          if (error.includes('Session expired')) {
+            this.router.navigate(['/login']);
+          }
+        }
+      });
   }
 
   deleteUser(user: User) {
@@ -56,22 +70,29 @@ export class UserRemoveComponent implements OnInit {
       data: { username: user.username }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.userService.deleteUser(user.userId).subscribe({
-          next: (response) => {
-            if (response === 'user is deleted') {
-              this.snackBar.open('User deleted successfully', 'Close', { duration: 3000 });
-              this.loadUsers();
-            } else {
-              this.snackBar.open('Error deleting user', 'Close', { duration: 3000 });
-            }
-          },
-          error: (error) => {
-            this.snackBar.open('Error deleting user', 'Close', { duration: 3000 });
-          }
-        });
-      }
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        if (result) {
+          this.userService.deleteUser(user.userId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (response) => {
+                if (response === 'user is deleted') {
+                  this.snackBar.open('User deleted successfully', 'Close', { duration: 3000 });
+                  this.loadUsers();
+                } else {
+                  this.snackBar.open('Error deleting user', 'Close', { duration: 3000 });
+                }
+              },
+              error: (error) => {
+                this.snackBar.open(error, 'Close', { duration: 3000 });
+                if (error.includes('Session expired')) {
+                  this.router.navigate(['/login']);
+                }
+              }
+            });
+        }
+      });
   }
 }
