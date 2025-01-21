@@ -76,7 +76,6 @@ export class AuthService {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      console.log('Decoded token:', decodedToken); // For debugging
       
       // Handle role as array or string
       if (Array.isArray(decodedToken.role)) {
