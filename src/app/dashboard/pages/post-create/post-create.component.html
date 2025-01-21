@@ -1,0 +1,35 @@
+<div class="post-create-container">
+  <h2>Create New Post</h2>
+  
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Enter post title">
+      <mat-error *ngIf="postForm.get('title')?.hasError('required')">
+        Title is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Content</mat-label>
+      <textarea matInput formControlName="content" placeholder="Enter post content" rows="6"></textarea>
+      <mat-error *ngIf="postForm.get('content')?.hasError('required')">
+        Content is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="PUBLISHED">Published</mat-option>
+        <mat-option value="DRAFT">Draft</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!postForm.valid">
+        Create Post
+      </button>
+    </div>
+  </form>
+</div>

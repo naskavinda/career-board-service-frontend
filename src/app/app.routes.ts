@@ -68,6 +68,14 @@ export const routes: Routes = [
           role: 'MODERATOR',
         },
       },
+      {
+        path: 'create-post',
+        loadComponent: () =>
+          import('./dashboard/pages/post-create/post-create.component').then(
+            (m) => m.PostCreateComponent
+          ),
+        canActivate: [authGuard],
+      },
       // {
       //   path: 'users-timeline',
       //   loadComponent: () =>

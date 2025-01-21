@@ -8,6 +8,11 @@
     Dashboard
   </a>
   
+  <a mat-button routerLink="/dashboard/create-post" routerLinkActive="active">
+    <mat-icon>post_add</mat-icon>
+    Create Post
+  </a>
+  
   <!-- Admin only menu items -->
   @if (isAdmin) {
     <a mat-button routerLink="/users" routerLinkActive="active">
