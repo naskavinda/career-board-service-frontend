@@ -8,6 +8,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
+  if (req.url.includes('amazonaws.com')) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
 
   const token = authService.getToken();
