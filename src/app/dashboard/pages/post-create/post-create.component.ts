@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -17,7 +16,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ImageService } from '../services/image.service';
+import { PostService } from '../services/post.service';
 import { PresignImageResponse } from '../models/presign-image-response.model';
+import { CreatePostRequest } from '../models/create-post-request.model';
 
 interface ImagePreview {
   file: File;
@@ -49,13 +50,11 @@ export class PostCreateComponent {
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
+  postService = inject(PostService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {
+  constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
       title: ['', [Validators.required]],
       content: ['', [Validators.required]],
@@ -137,18 +136,27 @@ export class PostCreateComponent {
         this.isUploading = true;
 
         // Create post with image names
-        const postData = {
-          ...this.postForm.value,
-          userId: this.authService.getUserId(),
-          // imageNames: this.selectedFiles.map(file => file.name)
+        const uploadedImages = this.selectedFiles.map(file => file.name);
+        const postRequest: CreatePostRequest = {
+          title: this.postForm.get('title')?.value,
+          content: this.postForm.get('content')?.value,
+          imageNames: uploadedImages,
+          userId: Number(this.authService.getUserId()),
+          status: this.postForm.get('status')?.value,
         };
 
-        this.http.post<{ postId: number }>('http://localhost:8081/api/post', postData).subscribe({
+        this.postService.createPost(postRequest).subscribe({
           next: (response) => {
-            this.snackBar.open('Post created successfully!', 'Close', {
-              duration: 3000,
-            });
-            this.router.navigate(['/dashboard/post', response.postId]);
+            if (typeof response === 'string') {
+              this.snackBar.open(response, 'Close', {
+                duration: 3000,
+              });
+            } else {
+              this.snackBar.open('Post created successfully!', 'Close', {
+                duration: 3000,
+              });
+              this.router.navigate(['/dashboard/post', response.postId]);
+            }
           },
           error: (error) => {
             this.snackBar.open('Error creating post: ' + error.message, 'Close', {
