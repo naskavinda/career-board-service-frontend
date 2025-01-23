@@ -36,7 +36,7 @@ interface ImagePreview {
     MatButtonModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.scss'],
@@ -67,48 +67,46 @@ export class PostCreateComponent {
     if (files) {
       console.log('Selected files:', files);
 
-      
-
       let newFiles: File[] = Array.from(files).map(
         (file: File, index: number) => {
           console.log(file.name.split('.').pop());
-          const timestamp = Date.now() + "_" + index;
+          const timestamp = Date.now() + '_' + index;
+          const newName = timestamp + '.' + file.name.split('.').pop();
           Object.defineProperty(file, 'name', {
             writable: true,
-            value: timestamp + '.' + file.name.split('.').pop(),
+            value: `${this.authService.getUserId()}/${newName}`,
           });
           return file;
         }
       );
-      const nameList = newFiles.map((file: File) => `${this.authService.getUserId()}/${file.name}`);
+      const nameList = newFiles.map((file: File) => file.name);
       console.log(nameList);
       this.imageService.getPresignedUploadUrl(nameList).subscribe({
         next: (response) => {
           newFiles.forEach((file: File) => {
             console.log(response);
             const presignedUrl = response.find((res: PresignImageResponse) => {
-              const isMatching = res.key.includes(file.name)
+              const isMatching = res.key === file.name;
               console.log(res.key);
               console.log(file.name);
               console.log(isMatching);
-              return isMatching
-            })!.url;
-            this.imageService
-              .uploadFile(file, presignedUrl)
-              .subscribe({
-                next: (response) => {
-                  console.log('File uploaded successfully:', response);
-                },
-                error: (error) => {
-                  console.error('File upload failed:', error);
-                },
-              });
-          })
+              return isMatching;
+            });
+            // file['name'] = presignedUrl!.key;
+            this.imageService.uploadFile(file, presignedUrl!.url).subscribe({
+              next: (response) => {
+                console.log('File uploaded successfully:', response);
+              },
+              error: (error) => {
+                console.error('File upload failed:', error);
+              },
+            });
+          });
         },
       });
 
       this.selectedFiles = [...this.selectedFiles, ...newFiles];
-      
+
       // Generate previews for each new file
       newFiles.forEach((file: File) => {
         if (file.type.startsWith('image/')) {
@@ -116,7 +114,7 @@ export class PostCreateComponent {
           reader.onload = (e: any) => {
             this.imagePreviews.push({
               file: file,
-              url: e.target.result
+              url: e.target.result,
             });
           };
           reader.readAsDataURL(file);
@@ -127,7 +125,7 @@ export class PostCreateComponent {
 
   removeImage(index: number) {
     this.imagePreviews.splice(index, 1);
-    this.selectedFiles = this.imagePreviews.map(preview => preview.file);
+    this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
   }
 
   async onSubmit() {
@@ -136,7 +134,7 @@ export class PostCreateComponent {
         this.isUploading = true;
 
         // Create post with image names
-        const uploadedImages = this.selectedFiles.map(file => file.name);
+        const uploadedImages = this.selectedFiles.map((file) => file.name);
         const postRequest: CreatePostRequest = {
           title: this.postForm.get('title')?.value,
           content: this.postForm.get('content')?.value,
@@ -159,15 +157,23 @@ export class PostCreateComponent {
             }
           },
           error: (error) => {
-            this.snackBar.open('Error creating post: ' + error.message, 'Close', {
-              duration: 3000,
-            });
-          }
+            this.snackBar.open(
+              'Error creating post: ' + error.message,
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
+          },
         });
       } catch (error: any) {
-        this.snackBar.open('Error uploading images: ' + error.message, 'Close', {
-          duration: 3000,
-        });
+        this.snackBar.open(
+          'Error uploading images: ' + error.message,
+          'Close',
+          {
+            duration: 3000,
+          }
+        );
       } finally {
         this.isUploading = false;
         this.uploadProgress = 0;

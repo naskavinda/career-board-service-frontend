@@ -4,9 +4,9 @@ export interface Post {
   content: string;
   createdAt: string;
   username: string;
-  status: "DRAFT" | "PUBLISHED";
+  status: 'DRAFT' | 'PUBLISHED';
   images: {
     imageId: number;
     imageName: string;
-  }[]
+  }[];
 }
