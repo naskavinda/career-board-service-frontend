@@ -3,12 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../models/post.model';
+import { PostService } from '../services/post.service';
 import { register } from 'swiper/element/bundle';
 
 // Register Swiper custom elements
 register();
 
-
+/**
+ * Post details component
+ */
 @Component({
   selector: 'app-post-details',
   standalone: true,
@@ -24,21 +27,19 @@ export class PostDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private postService: PostService,
     private http: HttpClient
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      const postId = params['id'];
-      if (postId) {
-        this.fetchPost(postId);
-      }
-    });
+    const postId = this.route.snapshot.paramMap.get('id');
+    if (postId) {
+      this.fetchPost(postId);
+    }
   }
 
-  private fetchPost(postId: number) {
-    this.loading = true;
-    this.http.get<Post>(`http://localhost:8081/api/post/${postId}`).subscribe({
+  private fetchPost(postId: string) {
+    this.postService.getPost(postId).subscribe({
       next: (post) => {
         this.post = post;
         this.loading = false;
