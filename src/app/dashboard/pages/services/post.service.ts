@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../models/post.model';
 import { CreatePostRequest } from '../models/create-post-request.model';
+import { environment } from '../../../../environments/environment';
 
 export type CreatePostResponse = Post | string;
 
@@ -11,7 +12,7 @@ export type CreatePostResponse = Post | string;
 })
 export class PostService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8081/api';
+  private baseUrl = `${environment.apiUrl}/api`;
 
   getUserPosts(userId: string): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.baseUrl}/post/user/${userId}`);

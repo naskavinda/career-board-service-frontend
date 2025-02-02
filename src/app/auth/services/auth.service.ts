@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 import {
   LoginRequest,
   LoginResponse,
@@ -14,7 +15,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8081/api/auth';
+  private baseUrl = `${environment.apiUrl}/api/auth`;
   private readonly TOKEN_KEY = 'auth_token';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();

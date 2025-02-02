@@ -2,13 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PresignImageResponse } from '../models/presign-image-response.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8081/api/images';
+  private baseUrl = `${environment.apiUrl}/api/images`;
 
   getPresignedUploadUrl(
     imageNames: Array<string>
