@@ -53,6 +53,6 @@ export class PostDetailsComponent implements OnInit {
   }
 
   getImageUrl(imageName: string): string {
-    return `https://supun-init-2.s3.amazonaws.com/${imageName}`;
+    return `https://supun-init.s3.amazonaws.com/${imageName}`;
   }
 }
