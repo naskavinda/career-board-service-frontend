@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PostListComponent } from '../components/post-list/post-list.component';
+import { PostListComponent } from '../../components/post-list/post-list.component';
 
 @Component({
   selector: 'app-post-timeline',

@@ -44,16 +44,16 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'post-timeline/:userId',
+        path: 'timeline/:userId',
         loadComponent: () =>
           import(
-            './dashboard/pages/post-timeline/post-timeline.component'
+            './dashboard/pages/post/timeline/post-timeline.component'
           ).then((m) => m.PostTimelineComponent),
       },
       {
         path: 'post/:id',
         loadComponent: () =>
-          import('./dashboard/pages/post-details/post-details.component').then(
+          import('./dashboard/pages/post/details/post-details.component').then(
             (m) => m.PostDetailsComponent
           ),
       },
@@ -69,9 +69,9 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'create-post',
+        path: 'manage-post',
         loadComponent: () =>
-          import('./dashboard/pages/post-create/post-create.component').then(
+          import('./dashboard/pages/post/manage/manage-create.component').then(
             (m) => m.PostCreateComponent
           ),
         canActivate: [authGuard],

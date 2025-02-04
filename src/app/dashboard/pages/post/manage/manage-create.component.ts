@@ -14,11 +14,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../auth/services/auth.service';
-import { ImageService } from '../services/image.service';
-import { PostService } from '../services/post.service';
-import { PresignImageResponse } from '../models/presign-image-response.model';
-import { CreatePostRequest } from '../models/create-post-request.model';
+import { AuthService } from '../../../../auth/services/auth.service';
+import { ImageService } from '../../services/image.service';
+import { PostService } from '../../services/post.service';
+import { PresignImageResponse } from '../../models/presign-image-response.model';
+import { CreatePostRequest } from '../../models/create-post-request.model';
 
 interface ImagePreview {
   file: File;
@@ -26,7 +26,7 @@ interface ImagePreview {
 }
 
 @Component({
-  selector: 'app-post-create',
+  selector: 'app-post-manage',
   standalone: true,
   imports: [
     CommonModule,
@@ -38,8 +38,8 @@ interface ImagePreview {
     MatProgressBarModule,
     MatIconModule,
   ],
-  templateUrl: './post-create.component.html',
-  styleUrls: ['./post-create.component.scss'],
+  templateUrl: './manage-create.component.html',
+  styleUrls: ['./manage-create.component.scss'],
 })
 export class PostCreateComponent {
   postForm: FormGroup;

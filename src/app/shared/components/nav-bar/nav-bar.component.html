@@ -1,18 +1,18 @@
 <mat-toolbar color="primary">
   <span>Career Board</span>
   <span class="spacer"></span>
-  
+
   <!-- Menu items for all authenticated users -->
   <a mat-button routerLink="/dashboard" routerLinkActive="active">
     <mat-icon>dashboard</mat-icon>
     Dashboard
   </a>
-  
-  <a mat-button routerLink="/dashboard/create-post" routerLinkActive="active">
+
+  <a mat-button routerLink="/dashboard/manage-post" routerLinkActive="active">
     <mat-icon>post_add</mat-icon>
     Create Post
   </a>
-  
+
   <!-- Admin only menu items -->
   @if (isAdmin) {
     <a mat-button routerLink="/users" routerLinkActive="active">
@@ -32,7 +32,7 @@
       Delete Users
     </a>
   }
-  
+
   <!-- User only menu items -->
   @if (isUser) {
     <a mat-button routerLink="/my-posts" routerLinkActive="active">
@@ -40,7 +40,7 @@
       My Posts
     </a>
   }
-  
+
   <!-- Profile and Logout -->
   <button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon>account_circle</mat-icon>
