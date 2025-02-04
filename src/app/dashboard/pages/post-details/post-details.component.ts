@@ -1,13 +1,12 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../models/post.model';
 import { PostService } from '../services/post.service';
-import { register } from 'swiper/element/bundle';
-
-// Register Swiper custom elements
-register();
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 /**
  * Post details component
@@ -15,15 +14,20 @@ register();
 @Component({
   selector: 'app-post-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Required for Swiper custom elements
+  styleUrls: ['./post-details.component.scss']
 })
 export class PostDetailsComponent implements OnInit {
   post: Post | null = null;
   loading = true;
   error: string | null = null;
+  selectedIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,5 +58,22 @@ export class PostDetailsComponent implements OnInit {
 
   getImageUrl(imageName: string): string {
     return `https://supun-init.s3.amazonaws.com/${imageName}`;
+  }
+
+  // Carousel control methods
+  onTabChange(index: number): void {
+    this.selectedIndex = index;
+  }
+
+  previousImage(): void {
+    if (this.selectedIndex > 0) {
+      this.selectedIndex--;
+    }
+  }
+
+  nextImage(): void {
+    if (this.post?.images && this.selectedIndex < this.post.images.length - 1) {
+      this.selectedIndex++;
+    }
   }
 }

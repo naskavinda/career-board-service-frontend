@@ -14,20 +14,33 @@
           <span class="date">{{ post.createdAt | date : "medium" }}</span>
         </div>
         <div *ngIf="post.images && post.images.length > 0" class="mb-6">
-          <swiper-container
-            [pagination]="true"
-            [navigation]="true"
-            [slidesPerView]="1"
-            class="w-full h-[400px]"
+          <mat-tab-group
+            [selectedIndex]="selectedIndex"
+            (selectedIndexChange)="onTabChange($event)"
+            mat-stretch-tabs="false"
+            mat-align-tabs="center"
+            animationDuration="300ms"
+            class="image-carousel"
           >
-            <swiper-slide *ngFor="let image of post.images">
-              <img
-                [src]="getImageUrl(image.imageName)"
-                [alt]="image.imageName"
-                class="w-full h-full object-contain"
-              />
-            </swiper-slide>
-          </swiper-container>
+            <mat-tab *ngFor="let image of post.images; let i = index">
+              <div class="image-container">
+                <img
+                  [src]="getImageUrl(image.imageName)"
+                  [alt]="image.imageName"
+                  class="carousel-image"
+                />
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+          
+          <div class="carousel-controls" *ngIf="post.images.length > 1">
+            <button mat-icon-button (click)="previousImage()" [disabled]="selectedIndex === 0">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button mat-icon-button (click)="nextImage()" [disabled]="selectedIndex === post.images.length - 1">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
         </div>
       </header>
       <div class="post-content">
