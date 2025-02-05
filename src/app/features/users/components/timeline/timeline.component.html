@@ -1,0 +1,5 @@
+<div class="users-timeline-grid">
+  @for (user of users; track $index) {
+    <app-user-posts [user]="user" class="user-card-hover" />
+  }
+</div>

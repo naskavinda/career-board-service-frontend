@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/components/login/login.component';
-import { RegisterComponent } from './auth/components/register/register.component';
-import { authGuard } from './auth/guards/auth.guard';
-import { UnauthorizedComponent } from './auth/components/unauthorized/unauthorized.component';
+import { LoginComponent } from './features/auth/components/login/login.component';
+import { RegisterComponent } from './features/auth/components/register/register.component';
+import { authGuard } from './core/guards/auth.guard';
+import { UnauthorizedComponent } from './features/auth/components/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
   {
@@ -20,22 +20,22 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent
+      import('./core/components/layout/layout.component').then(
+        (m) => m.LayoutComponent
       ),
     canActivate: [authGuard],
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./dashboard/pages/user/user.component').then(
-            (m) => m.UserComponent
+          import('./features/posts/components/user-post-list/user-post-list.component').then(
+            (m) => m.UserPostListComponent
           ),
       },
       {
         path: 'admin',
         loadComponent: () =>
-          import('./dashboard/pages/admin/admin.component').then(
+          import('./features/users/components/admin/admin.component').then(
             (m) => m.AdminComponent
           ),
         canActivate: [authGuard],
@@ -47,21 +47,21 @@ export const routes: Routes = [
         path: 'timeline/:userId',
         loadComponent: () =>
           import(
-            './dashboard/pages/post/timeline/post-timeline.component'
+            './features/posts/components/timeline/post-timeline.component'
           ).then((m) => m.PostTimelineComponent),
       },
       {
         path: 'post/:id',
         loadComponent: () =>
-          import('./dashboard/pages/post/details/post-details.component').then(
+          import('./features/posts/components/details/post-details.component').then(
             (m) => m.PostDetailsComponent
           ),
       },
       {
         path: 'user-remove',
         loadComponent: () =>
-          import('./dashboard/pages/user-remove/user-remove.component').then(
-            (m) => m.UserRemoveComponent
+          import('./features/users/components/remove/remove.component').then(
+            (m) => m.RemoveComponent
           ),
         canActivate: [authGuard],
         data: {
@@ -71,7 +71,7 @@ export const routes: Routes = [
       {
         path: 'manage-post',
         loadComponent: () =>
-          import('./dashboard/pages/post/manage/manage-create.component').then(
+          import('./features/posts/components/manage/manage-create.component').then(
             (m) => m.PostCreateComponent
           ),
         canActivate: [authGuard],

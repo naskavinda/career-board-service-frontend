@@ -8,7 +8,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AuthService } from './auth/services/auth.service';
+import { AuthService } from './core/services/auth.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
