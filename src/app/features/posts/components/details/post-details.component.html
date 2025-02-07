@@ -8,7 +8,19 @@
   <ng-container *ngIf="!loading && post">
     <article class="post">
       <header class="post-header">
-        <h1 class="post-title">{{ post.title }}</h1>
+        <div class="title-actions">
+          <h1 class="post-title">{{ post.title }}</h1>
+          <button 
+            *ngIf="canEdit"
+            mat-raised-button 
+            color="primary" 
+            (click)="onEditClick()"
+            class="edit-button"
+          >
+            <mat-icon>edit</mat-icon>
+            Edit Post
+          </button>
+        </div>
         <div class="post-meta">
           <span class="author">By {{ post.username }}</span>
           <span class="date">{{ post.createdAt | date : "medium" }}</span>

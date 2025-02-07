@@ -58,6 +58,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'post/edit/:id',
+        loadComponent: () =>
+          import('./features/posts/components/manage/manage-create.component').then(
+            (m) => m.PostCreateComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
         path: 'user-remove',
         loadComponent: () =>
           import('./features/users/components/remove/remove.component').then(

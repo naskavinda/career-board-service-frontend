@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,12 +13,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
 import { PresignImageResponse } from '../../models/presign-image-response.model';
 import { CreatePostRequest } from '../../models/create-post-request.model';
+import { UpdatePostRequest } from '../../models/update-post-request.model';
+import { Post } from '../../models/post.model';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 interface ImagePreview {
   file: File;
@@ -41,24 +46,86 @@ interface ImagePreview {
   templateUrl: './manage-create.component.html',
   styleUrls: ['./manage-create.component.scss'],
 })
-export class PostCreateComponent {
+export class PostCreateComponent implements OnInit {
   postForm: FormGroup;
   selectedFiles: File[] = [];
   uploadProgress: number = 0;
   isUploading: boolean = false;
   imagePreviews: ImagePreview[] = [];
+  isEditMode: boolean = false;
+  postId: string | null = null;
+  currentPost: Post | null = null;
+  canModerate: boolean = false;
 
   imageService = inject(ImageService);
   authService = inject(AuthService);
   postService = inject(PostService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   constructor(private fb: FormBuilder) {
     this.postForm = this.fb.group({
       title: ['', [Validators.required]],
       content: ['', [Validators.required]],
       status: ['DRAFT', [Validators.required]],
+      moderatorComment: [''],
+    });
+
+    const userRole = this.authService.getUserRole();
+    this.canModerate = userRole === 'MODERATOR' || userRole === 'ADMIN';
+  }
+
+  ngOnInit() {
+    this.route.params.pipe(
+      switchMap(params => {
+        const id = params['id'];
+        if (id) {
+          this.isEditMode = true;
+          this.postId = id;
+          return this.postService.getPost(id);
+        }
+        return of(null);
+      })
+    ).subscribe({
+      next: (post) => {
+        if (post) {
+          this.currentPost = post;
+          // Check if user has permission to edit
+          const userId = this.authService.getUserId();
+          if (post.username.toString() !== userId && !this.canModerate) { // TODO Need to fixed to get userId
+            this.snackBar.open('You do not have permission to edit this post', 'Close', {
+              duration: 3000,
+            });
+            this.router.navigate(['/dashboard']);
+            return;
+          }
+          
+          this.postForm.patchValue({
+            title: post.title,
+            content: post.content,
+            status: post.status,
+          });
+
+          // Load existing images
+          if (post.images) {
+            post.images.forEach((image) => {
+              this.imagePreviews.push({
+                file: new File([], image.imageName),
+                url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
+              });
+            });
+            this.selectedFiles = this.imagePreviews.map(
+              (preview) => preview.file
+            );
+          }
+        }
+      },
+      error: (error) => {
+        this.snackBar.open('Error loading post: ' + error.message, 'Close', {
+          duration: 3000,
+        });
+      }
     });
   }
 
@@ -135,37 +202,70 @@ export class PostCreateComponent {
 
         // Create post with image names
         const uploadedImages = this.selectedFiles.map((file) => file.name);
-        const postRequest: CreatePostRequest = {
+        const postData: {
+          title: any;
+          content: any;
+          imageNames: string[];
+          status: any;
+          moderatorComment?: string;
+        } = {
           title: this.postForm.get('title')?.value,
           content: this.postForm.get('content')?.value,
           imageNames: uploadedImages,
-          userId: Number(this.authService.getUserId()),
           status: this.postForm.get('status')?.value,
         };
 
-        this.postService.createPost(postRequest).subscribe({
-          next: (response) => {
-            if (typeof response === 'string') {
-              this.snackBar.open(response, 'Close', {
+        if (this.canModerate) {
+          postData.moderatorComment = this.postForm.get('moderatorComment')?.value;
+        }
+
+        if (this.isEditMode && this.postId) {
+          this.postService.updatePost(this.postId, postData as UpdatePostRequest).subscribe({
+            next: (response) => {
+              this.snackBar.open('Post updated successfully!', 'Close', {
                 duration: 3000,
               });
-            } else {
-              this.snackBar.open('Post created successfully!', 'Close', {
-                duration: 3000,
-              });
-              this.router.navigate(['/dashboard/post', response.postId]);
-            }
-          },
-          error: (error) => {
-            this.snackBar.open(
-              'Error creating post: ' + error.message,
-              'Close',
-              {
-                duration: 3000,
+              this.router.navigate(['/dashboard/post', this.postId]);
+            },
+            error: (error) => {
+              this.snackBar.open(
+                'Error updating post: ' + error.message,
+                'Close',
+                {
+                  duration: 3000,
+                }
+              );
+            },
+          });
+        } else {
+          const createPostData = {
+            ...postData,
+            userId: Number(this.authService.getUserId()),
+          };
+          this.postService.createPost(createPostData as CreatePostRequest).subscribe({
+            next: (response) => {
+              if (typeof response === 'string') {
+                this.snackBar.open(response, 'Close', {
+                  duration: 3000,
+                });
+              } else {
+                this.snackBar.open('Post created successfully!', 'Close', {
+                  duration: 3000,
+                });
+                this.router.navigate(['/dashboard/post', response.postId]);
               }
-            );
-          },
-        });
+            },
+            error: (error) => {
+              this.snackBar.open(
+                'Error creating post: ' + error.message,
+                'Close',
+                {
+                  duration: 3000,
+                }
+              );
+            },
+          });
+        }
       } catch (error: any) {
         this.snackBar.open(
           'Error uploading images: ' + error.message,
