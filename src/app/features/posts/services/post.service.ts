@@ -27,7 +27,7 @@ export class PostService {
     return this.http.get<Post>(`${this.baseUrl}/post/${postId}`);
   }
 
-  updatePost(postId: string, postData: UpdatePostRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.baseUrl}/post/${postId}`, postData);
+  updatePost(postData: UpdatePostRequest): Observable<Post> {
+    return this.http.put<Post>(`${this.baseUrl}/post`, postData);
   }
 }

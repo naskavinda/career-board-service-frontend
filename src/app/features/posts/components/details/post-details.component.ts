@@ -63,13 +63,14 @@ export class PostDetailsComponent implements OnInit {
 
   private checkEditPermission() {
     if (!this.post) return;
-    
+    console.log(this.post);
     const userId = this.authService.getUserId();
     const userRole = this.authService.getUserRole();
     
+    console.log(this.post.userId, userId);
     // User can edit if they are the author or if they are a moderator/admin
     this.canEdit = 
-      this.post.username.toString() === userId || // TODO Need to fixed to get userId
+      this.post.userId?.toString() == userId ||
       userRole === 'MODERATOR' || 
       userRole === 'ADMIN';
   }

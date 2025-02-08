@@ -14,16 +14,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../../../core/services/auth.service';
+import { CreatePostRequest } from '../../models/create-post-request.model';
+import { PresignImageResponse } from '../../models/presign-image-response.model';
+import { UpdatePostRequest } from '../../models/update-post-request.model';
 import { ImageService } from '../../services/image.service';
 import { PostService } from '../../services/post.service';
-import { PresignImageResponse } from '../../models/presign-image-response.model';
-import { CreatePostRequest } from '../../models/create-post-request.model';
-import { UpdatePostRequest } from '../../models/update-post-request.model';
+import { postImage } from '../../models/post-image.model';
 import { Post } from '../../models/post.model';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
 
 interface ImagePreview {
   file: File;
@@ -77,56 +77,62 @@ export class PostCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.pipe(
-      switchMap(params => {
-        const id = params['id'];
-        if (id) {
-          this.isEditMode = true;
-          this.postId = id;
-          return this.postService.getPost(id);
-        }
-        return of(null);
-      })
-    ).subscribe({
-      next: (post) => {
-        if (post) {
-          this.currentPost = post;
-          // Check if user has permission to edit
-          const userId = this.authService.getUserId();
-          if (post.username.toString() !== userId && !this.canModerate) { // TODO Need to fixed to get userId
-            this.snackBar.open('You do not have permission to edit this post', 'Close', {
-              duration: 3000,
-            });
-            this.router.navigate(['/dashboard']);
-            return;
+    this.route.params
+      .pipe(
+        switchMap((params) => {
+          const id = params['id'];
+          if (id) {
+            this.isEditMode = true;
+            this.postId = id;
+            return this.postService.getPost(id);
           }
-          
-          this.postForm.patchValue({
-            title: post.title,
-            content: post.content,
-            status: post.status,
-          });
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (post) => {
+          if (post) {
+            this.currentPost = post;
+            // Check if user has permission to edit
+            const userId = this.authService.getUserId();
+            if (post.userId.toString() != userId && !this.canModerate) {
+              this.snackBar.open(
+                'You do not have permission to edit this post',
+                'Close',
+                {
+                  duration: 3000,
+                }
+              );
+              this.router.navigate(['/dashboard']);
+              return;
+            }
 
-          // Load existing images
-          if (post.images) {
-            post.images.forEach((image) => {
-              this.imagePreviews.push({
-                file: new File([], image.imageName),
-                url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
-              });
+            this.postForm.patchValue({
+              title: post.title,
+              content: post.content,
+              status: post.status,
             });
-            this.selectedFiles = this.imagePreviews.map(
-              (preview) => preview.file
-            );
+
+            // Load existing images
+            if (post.images) {
+              post.images.forEach((image) => {
+                this.imagePreviews.push({
+                  file: new File([], image.imageName),
+                  url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
+                });
+              });
+              this.selectedFiles = this.imagePreviews.map(
+                (preview) => preview.file
+              );
+            }
           }
-        }
-      },
-      error: (error) => {
-        this.snackBar.open('Error loading post: ' + error.message, 'Close', {
-          duration: 3000,
-        });
-      }
-    });
+        },
+        error: (error) => {
+          this.snackBar.open('Error loading post: ' + error.message, 'Close', {
+            duration: 3000,
+          });
+        },
+      });
   }
 
   onFileSelected(event: any) {
@@ -195,6 +201,20 @@ export class PostCreateComponent implements OnInit {
     this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
   }
 
+  mergeImageLists(
+    uploadedImages: string[],
+    imageList: postImage[]
+  ): postImage[] {
+    const imageMap = new Map(
+      imageList.map((image) => [image.imageName, image.imageId])
+    );
+
+    return uploadedImages.map((imageName) => ({
+      imageId: imageMap.get(imageName) ?? 0,
+      imageName,
+    }));
+  }
+
   async onSubmit() {
     if (this.postForm.valid) {
       try {
@@ -202,25 +222,27 @@ export class PostCreateComponent implements OnInit {
 
         // Create post with image names
         const uploadedImages = this.selectedFiles.map((file) => file.name);
-        const postData: {
-          title: any;
-          content: any;
-          imageNames: string[];
-          status: any;
-          moderatorComment?: string;
-        } = {
-          title: this.postForm.get('title')?.value,
-          content: this.postForm.get('content')?.value,
-          imageNames: uploadedImages,
-          status: this.postForm.get('status')?.value,
-        };
-
+        console.log(uploadedImages);
+        let moderatorComment = '';
         if (this.canModerate) {
-          postData.moderatorComment = this.postForm.get('moderatorComment')?.value;
+          moderatorComment = this.postForm.get('moderatorComment')!.value;
         }
 
         if (this.isEditMode && this.postId) {
-          this.postService.updatePost(this.postId, postData as UpdatePostRequest).subscribe({
+          console.log('Update Post');
+          const postData: UpdatePostRequest = {
+            postId: Number(this.postId), // Convert string to number
+            userId: this.currentPost!.userId,
+            title: this.postForm!.get('title')!.value,
+            content: this.postForm.get('content')!.value,
+            images: this.mergeImageLists(
+              uploadedImages,
+              this.currentPost!.images
+            ),
+            status: this.postForm.get('status')!.value,
+            moderatorComment: moderatorComment,
+          };
+          this.postService.updatePost(postData as UpdatePostRequest).subscribe({
             next: (response) => {
               this.snackBar.open('Post updated successfully!', 'Close', {
                 duration: 3000,
@@ -238,11 +260,23 @@ export class PostCreateComponent implements OnInit {
             },
           });
         } else {
-          const createPostData = {
-            ...postData,
+          console.log('Create Post');
+          const postData: {
+            title: string;
+            content: string;
+            imageNames: string[];
+            status: string;
+            moderatorComment?: string;
+            userId: number;
+            postId?: number;
+          } = {
+            title: this.postForm.get('title')?.value,
+            content: this.postForm.get('content')?.value,
+            imageNames: uploadedImages,
+            status: this.postForm.get('status')?.value,
             userId: Number(this.authService.getUserId()),
           };
-          this.postService.createPost(createPostData as CreatePostRequest).subscribe({
+          this.postService.createPost(postData as CreatePostRequest).subscribe({
             next: (response) => {
               if (typeof response === 'string') {
                 this.snackBar.open(response, 'Close', {
