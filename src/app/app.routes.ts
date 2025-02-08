@@ -40,7 +40,7 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'ADMIN',
+          role: ['ADMIN'],
         },
       },
       {
@@ -73,7 +73,7 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'MODERATOR',
+          role: ['MODERATOR', 'ADMIN'],
         },
       },
       {
@@ -83,18 +83,7 @@ export const routes: Routes = [
             (m) => m.PostCreateComponent
           ),
         canActivate: [authGuard],
-      },
-      // {
-      //   path: 'users-timeline',
-      //   loadComponent: () =>
-      //     import(
-      //       './dashboard/pages/components/users-timeline/users-timeline.component'
-      //     ).then((m) => m.UsersTimelineComponent),
-      //   canActivate: [authGuard],
-      //   data: {
-      //     role: 'ADMIN',
-      //   },
-      // },
+      }
     ],
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },

@@ -55,7 +55,11 @@ export class LoginComponent implements OnInit {
     this.authService.isAuthenticated$.subscribe({
       next: (isAuthenticated) => {
         if (isAuthenticated) {
-          this.router.navigate(['/dashboard']);
+          if (this.authService.getUserRole() == 'ADMIN') {
+            this.router.navigate(['/dashboard/admin']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
         }
       },
     });
@@ -68,7 +72,11 @@ export class LoginComponent implements OnInit {
           if (response.success) {
             const successMessage = 'Login successful';
             this.notificationService.showSuccess(successMessage);
-            this.router.navigate(['/dashboard']);
+            if (this.authService.getUserRole() == 'ADMIN') {
+              this.router.navigate(['/dashboard/admin']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
           } else {
             const errorMessage = formatErrorMessage(
               response.message || 'LOGIN_FAILED'
