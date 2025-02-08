@@ -40,7 +40,7 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'ADMIN',
+          role: ['ADMIN'],
         },
       },
       {
@@ -58,6 +58,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'post/edit/:id',
+        loadComponent: () =>
+          import('./features/posts/components/manage/manage-create.component').then(
+            (m) => m.PostCreateComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
         path: 'user-remove',
         loadComponent: () =>
           import('./features/users/components/remove/remove.component').then(
@@ -65,7 +73,7 @@ export const routes: Routes = [
           ),
         canActivate: [authGuard],
         data: {
-          role: 'MODERATOR',
+          role: ['MODERATOR', 'ADMIN'],
         },
       },
       {
@@ -75,18 +83,7 @@ export const routes: Routes = [
             (m) => m.PostCreateComponent
           ),
         canActivate: [authGuard],
-      },
-      // {
-      //   path: 'users-timeline',
-      //   loadComponent: () =>
-      //     import(
-      //       './dashboard/pages/components/users-timeline/users-timeline.component'
-      //     ).then((m) => m.UsersTimelineComponent),
-      //   canActivate: [authGuard],
-      //   data: {
-      //     role: 'ADMIN',
-      //   },
-      // },
+      }
     ],
   },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
