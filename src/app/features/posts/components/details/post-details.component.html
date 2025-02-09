@@ -58,6 +58,13 @@
       <div class="post-content">
         {{ post.content }}
       </div>
+      
+      <div *ngIf="post.moderatorComment" class="moderator-comment">
+        <h3 class="moderator-title">Moderator Comment</h3>
+        <div class="comment-content">
+          {{ post.moderatorComment }}
+        </div>
+      </div>
     </article>
   </ng-container>
 
