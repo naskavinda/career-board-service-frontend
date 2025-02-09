@@ -77,7 +77,10 @@ export class PostDetailsComponent implements OnInit {
 
   onEditClick() {
     if (this.post) {
-      this.router.navigate(['/dashboard/post/edit', this.post.postId]);
+      this.router.navigate(['/dashboard/post/edit', this.post.postId], {
+        state: { post: this.post },
+        skipLocationChange: false
+      });
     }
   }
 

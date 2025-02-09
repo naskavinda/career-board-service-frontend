@@ -77,63 +77,108 @@ export class PostCreateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params
-      .pipe(
-        switchMap((params) => {
-          const id = params['id'];
-          if (id) {
-            this.isEditMode = true;
-            this.postId = id;
-            return this.postService.getPost(id);
-          }
-          return of(null);
-        })
-      )
-      .subscribe({
-        next: (post) => {
-          if (post) {
-            this.currentPost = post;
-            // Check if user has permission to edit
-            const userId = this.authService.getUserId();
-            if (post.userId.toString() != userId && !this.canModerate) {
-              this.snackBar.open(
-                'You do not have permission to edit this post',
-                'Close',
-                {
-                  duration: 3000,
-                }
-              );
-              this.router.navigate(['/dashboard']);
-              return;
-            }
-
-            this.postForm.patchValue({
-              title: post.title,
-              content: post.content,
-              status: post.status,
-              moderatorComment: post.moderatorComment
-            });
-
-            // Load existing images
-            if (post.images) {
-              post.images.forEach((image) => {
-                this.imagePreviews.push({
-                  file: new File([], image.imageName),
-                  url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
-                });
-              });
-              this.selectedFiles = this.imagePreviews.map(
-                (preview) => preview.file
-              );
-            }
-          }
-        },
-        error: (error) => {
-          this.snackBar.open('Error loading post: ' + error.message, 'Close', {
+    const state = window.history.state as { post: Post } | undefined;
+    console.log('State:', state);
+    
+    if (state?.post) {
+      // Use the post data from router state
+      this.isEditMode = true;
+      this.postId = state.post.postId?.toString() || null;
+      this.currentPost = state.post;
+      
+      // Check if user has permission to edit
+      const userId = this.authService.getUserId();
+      if (state.post.userId.toString() != userId && !this.canModerate) {
+        this.snackBar.open(
+          'You do not have permission to edit this post',
+          'Close',
+          {
             duration: 3000,
-          });
-        },
+          }
+        );
+        this.router.navigate(['/dashboard']);
+        return;
+      }
+
+      this.postForm.patchValue({
+        title: state.post.title,
+        content: state.post.content,
+        status: state.post.status,
+        moderatorComment: state.post.moderatorComment
       });
+
+      // Load existing images
+      if (state.post.images) {
+        state.post.images.forEach((image) => {
+          this.imagePreviews.push({
+            file: new File([], image.imageName),
+            url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
+          });
+        });
+        this.selectedFiles = this.imagePreviews.map(
+          (preview) => preview.file
+        );
+      }
+    } else {
+      // If no state data, check if we're in edit mode via URL
+      this.route.params
+        .pipe(
+          switchMap((params) => {
+            const id = params['id'];
+            if (id) {
+              this.isEditMode = true;
+              this.postId = id;
+              return this.postService.getPost(id);
+            }
+            return of(null);
+          })
+        )
+        .subscribe({
+          next: (post) => {
+            if (post) {
+              this.currentPost = post;
+              // Check if user has permission to edit
+              const userId = this.authService.getUserId();
+              if (post.userId.toString() != userId && !this.canModerate) {
+                this.snackBar.open(
+                  'You do not have permission to edit this post',
+                  'Close',
+                  {
+                    duration: 3000,
+                  }
+                );
+                this.router.navigate(['/dashboard']);
+                return;
+              }
+
+              this.postForm.patchValue({
+                title: post.title,
+                content: post.content,
+                status: post.status,
+                moderatorComment: post.moderatorComment
+              });
+
+              // Load existing images
+              if (post.images) {
+                post.images.forEach((image) => {
+                  this.imagePreviews.push({
+                    file: new File([], image.imageName),
+                    url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
+                  });
+                });
+                this.selectedFiles = this.imagePreviews.map(
+                  (preview) => preview.file
+                );
+              }
+            }
+          },
+          error: (error) => {
+            this.snackBar.open('Error loading post: ' + error.message, 'Close', {
+              duration: 3000,
+            });
+          },
+        });
+    }
   }
 
   onFileSelected(event: any) {
