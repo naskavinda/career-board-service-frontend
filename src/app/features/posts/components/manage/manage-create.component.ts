@@ -111,6 +111,7 @@ export class PostCreateComponent implements OnInit {
               title: post.title,
               content: post.content,
               status: post.status,
+              moderatorComment: post.moderatorComment
             });
 
             // Load existing images
