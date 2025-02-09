@@ -116,6 +116,26 @@
   font-size: 1.2rem;
 }
 
+.moderator-comment {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+
+  .moderator-title {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .comment-content {
+    color: #212529;
+    line-height: 1.5;
+  }
+}
+
 :host {
   display: block;
 }

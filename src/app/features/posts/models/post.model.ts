@@ -9,5 +9,6 @@ export interface Post {
   username: string;
   status: 'DRAFT' | 'PUBLISHED';
   images: postImage[];
+  moderatorComment: string;
 }
 
