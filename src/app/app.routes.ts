@@ -28,6 +28,14 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
+          import('./features/posts/components/all-posts/all-posts.component').then(
+            (m) => m.AllPostsComponent
+          ),
+        canActivate: [authGuard],
+      },
+      {
+        path: 'my-posts',
+        loadComponent: () =>
           import('./features/posts/components/user-post-list/user-post-list.component').then(
             (m) => m.UserPostListComponent
           ),

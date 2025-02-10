@@ -5,7 +5,11 @@
   @if (isModerator || isUser) {
   <a mat-button routerLink="/dashboard" routerLinkActive="active">
     <mat-icon>dashboard</mat-icon>
-    Dashboard
+    All Posts
+  </a>
+  <a mat-button routerLink="/dashboard/my-posts" routerLinkActive="active">
+    <mat-icon>dashboard</mat-icon>
+    My Posts
   </a>
   }
 

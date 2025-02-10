@@ -8,6 +8,13 @@ import { environment } from '../../../../environments/environment';
 
 export type CreatePostResponse = Post | string;
 
+export interface PostResponse {
+  content: Post[];
+  totalElements: number;
+  size: number;
+  number: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,6 +24,12 @@ export class PostService {
 
   getUserPosts(userId: string): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.baseUrl}/post/user/${userId}`);
+  }
+
+  getAllPosts(page: number, size: number): Observable<PostResponse> {
+    return this.http.get<PostResponse>(`${this.baseUrl}/post`, {
+      params: { page: page.toString(), size: size.toString() }
+    });
   }
 
   createPost(postData: CreatePostRequest): Observable<CreatePostResponse> {
