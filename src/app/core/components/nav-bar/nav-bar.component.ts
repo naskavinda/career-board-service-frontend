@@ -23,6 +23,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavBarComponent implements OnInit {
   userRole: string | null = '';
+  isMobileMenuOpen = false;
 
   constructor(private authService: AuthService) {}
 
@@ -55,5 +56,13 @@ export class NavBarComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 }

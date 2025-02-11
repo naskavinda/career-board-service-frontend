@@ -1,28 +1,132 @@
+// Variables
+$mobile-breakpoint: 768px;
+$tablet-breakpoint: 1024px;
+$desktop-breakpoint: 1200px;
+
+.nav-toolbar {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+
 .spacer {
   flex: 1 1 auto;
 }
 
-.mat-toolbar {
-  position: fixed;
-  top: 0;
-  z-index: 1000;
+.brand {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-right: 16px;
 }
 
 .active {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-a {
-  text-decoration: none;
-  color: white;
-  
-  mat-icon {
-    margin-right: 4px;
+// Desktop menu styles
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: none;
   }
 }
 
-button {
+// Mobile menu toggle button
+.mobile-menu-toggle {
+  display: none;
+  margin-left: auto;
+  margin-right: 8px;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: block;
+  }
+}
+
+// Mobile menu overlay
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px; // Height of toolbar
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 999;
+  padding: 16px;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+
+  &.open {
+    display: flex;
+  }
+
+  a {
+    width: 100%;
+    justify-content: flex-start;
+    color: rgba(0, 0, 0, 0.87);
+    padding: 8px 16px;
+    border-radius: 4px;
+
+    mat-icon {
+      margin-right: 16px;
+    }
+
+    &.active {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+// Common link styles
+a {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  
   mat-icon {
-    margin-right: 4px;
+    margin-right: 8px;
+  }
+
+  span {
+    margin-left: 4px;
+  }
+}
+
+// Profile button
+.profile-button {
+  margin-left: 8px;
+}
+
+// Responsive adjustments
+@media (min-width: $mobile-breakpoint) and (max-width: $tablet-breakpoint) {
+  .desktop-menu {
+    a {
+      padding: 0 12px;
+    }
+  }
+}
+
+@media (min-width: $tablet-breakpoint) and (max-width: $desktop-breakpoint) {
+  .nav-toolbar {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: $desktop-breakpoint) {
+  .nav-toolbar {
+    padding: 0 32px;
   }
 }
