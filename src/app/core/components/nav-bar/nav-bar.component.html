@@ -41,10 +41,15 @@
   </div>
 
   <!-- Profile menu (always visible) -->
-  <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button">
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button" [matTooltip]="username || 'Profile'">
     <mat-icon>account_circle</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
+    <div class="menu-header">
+      <span class="username-display">{{username || 'User'}}</span>
+      <small>{{isModerator ? 'Moderator' : (isAdmin ? 'Admin' : 'User')}}</small>
+    </div>
+    <mat-divider></mat-divider>
     <a mat-menu-item routerLink="/profile">
       <mat-icon>person</mat-icon>
       <span>Profile</span>
