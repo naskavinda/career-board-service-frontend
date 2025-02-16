@@ -13,7 +13,7 @@ Before running the project, make sure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/career-board.git
+   git clone https://github.com/career-board/career-board.git
    cd career-board
    ```
 
@@ -35,7 +35,7 @@ If you'd like to run the application using Docker, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/career-board.git
+   git clone https://github.com/career-board/career-board.git
    cd career-board
    ```
 
