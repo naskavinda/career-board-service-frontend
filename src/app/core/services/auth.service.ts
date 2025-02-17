@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -20,18 +20,25 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
+  csrfToken: string = '';
+
   constructor(private http: HttpClient, private router: Router) {
     this.checkToken();
   }
 
   login(request: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, request).pipe(
-      tap((response) => {
-        if (response.success && response.payload.token) {
-          this.setToken(response.payload.token);
-        }
+    return this.http
+      .post<LoginResponse>(`${this.baseUrl}/login`, request, {
+        headers: new HttpHeaders({ 'X-CSRF-TOKEN': this.csrfToken }),
+        withCredentials: true,
       })
-    );
+      .pipe(
+        tap((response) => {
+          if (response.success && response.payload.token) {
+            this.setToken(response.payload.token);
+          }
+        })
+      );
   }
 
   register(request: RegisterRequest): Observable<RegisterResponse> {
@@ -112,5 +119,11 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  getCsrf() {
+    return this.http
+      .get(this.baseUrl + '/csrf/token', { withCredentials: true })
+      .subscribe((data: any) => (this.csrfToken = data.token));
   }
 }

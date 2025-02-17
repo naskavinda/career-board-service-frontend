@@ -9,12 +9,16 @@ import { AuthService } from './core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, NavBarComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   isLoggedIn$;
 
   constructor(private authService: AuthService) {
     this.isLoggedIn$ = this.authService.isAuthenticated$;
+  }
+
+  ngOnInit(): void {
+    this.authService.getCsrf();
   }
 }

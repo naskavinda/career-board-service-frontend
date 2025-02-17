@@ -1,8 +1,7 @@
-import { postImage } from "./post-image.model";
-
+import { postImage } from './post-image.model';
 
 export interface UpdatePostRequest {
-  postId: number;
+  postId: string;
   userId: number;
   title: string;
   content: string;

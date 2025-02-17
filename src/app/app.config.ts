@@ -19,9 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(), */
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    ),
+    provideHttpClient(withInterceptors([authInterceptor])),
     AuthService,
     importProvidersFrom(MatSnackBarModule),
   ],

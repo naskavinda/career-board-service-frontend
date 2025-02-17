@@ -79,13 +79,13 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
     const state = window.history.state as { post: Post } | undefined;
     console.log('State:', state);
-    
+
     if (state?.post) {
       // Use the post data from router state
       this.isEditMode = true;
       this.postId = state.post.postId?.toString() || null;
       this.currentPost = state.post;
-      
+
       // Check if user has permission to edit
       const userId = this.authService.getUserId();
       if (state.post.userId.toString() != userId && !this.canModerate) {
@@ -104,7 +104,7 @@ export class PostCreateComponent implements OnInit {
         title: state.post.title,
         content: state.post.content,
         status: state.post.status,
-        moderatorComment: state.post.moderatorComment
+        moderatorComment: state.post.moderatorComment,
       });
 
       // Load existing images
@@ -115,9 +115,7 @@ export class PostCreateComponent implements OnInit {
             url: `https://supun-init.s3.amazonaws.com/${image.imageName}`,
           });
         });
-        this.selectedFiles = this.imagePreviews.map(
-          (preview) => preview.file
-        );
+        this.selectedFiles = this.imagePreviews.map((preview) => preview.file);
       }
     } else {
       // If no state data, check if we're in edit mode via URL
@@ -155,7 +153,7 @@ export class PostCreateComponent implements OnInit {
                 title: post.title,
                 content: post.content,
                 status: post.status,
-                moderatorComment: post.moderatorComment
+                moderatorComment: post.moderatorComment,
               });
 
               // Load existing images
@@ -173,9 +171,13 @@ export class PostCreateComponent implements OnInit {
             }
           },
           error: (error) => {
-            this.snackBar.open('Error loading post: ' + error.message, 'Close', {
-              duration: 3000,
-            });
+            this.snackBar.open(
+              'Error loading post: ' + error.message,
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
           },
         });
     }
@@ -277,7 +279,7 @@ export class PostCreateComponent implements OnInit {
         if (this.isEditMode && this.postId) {
           console.log('Update Post');
           const postData: UpdatePostRequest = {
-            postId: Number(this.postId), // Convert string to number
+            postId: this.postId, // Convert string to number
             userId: this.currentPost!.userId,
             title: this.postForm!.get('title')!.value,
             content: this.postForm.get('content')!.value,
