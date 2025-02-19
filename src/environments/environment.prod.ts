@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://orca-app-m6bsb.ondigitalocean.app', // TODO: Change this to production URL
+  // apiUrl: 'https://squid-app-mhgie.ondigitalocean.app',
+ apiUrl: 'http://localhost:8081'
 };

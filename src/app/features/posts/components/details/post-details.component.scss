@@ -1,0 +1,141 @@
+.post-details-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.post {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+
+  .post-header {
+    margin-bottom: 2rem;
+
+    .title-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .post-title {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        flex: 1;
+      }
+
+      .edit-button {
+        margin-left: 1rem;
+        
+        mat-icon {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+
+      .author {
+        margin-right: 1rem;
+      }
+
+      .date {
+        &:before {
+          content: "•";
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .post-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+    white-space: pre-wrap;
+  }
+}
+
+.image-carousel {
+  margin: 2rem 0;
+  
+  ::ng-deep {
+    .mat-mdc-tab-header {
+      display: none;
+    }
+    
+    .mat-mdc-tab-body-wrapper {
+      height: 100%;
+    }
+
+    .mat-mdc-tab-body-content {
+      overflow: hidden;
+    }
+  }
+
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    
+    img {
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+    }
+  }
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.moderator-comment {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+
+  .moderator-title {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .comment-content {
+    color: #212529;
+    line-height: 1.5;
+  }
+}
+
+:host {
+  display: block;
+}
