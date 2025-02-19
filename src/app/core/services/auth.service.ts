@@ -85,7 +85,6 @@ export class AuthService {
     try {
       const decodedToken: any = jwtDecode(token);
 
-      // Handle role as array or string
       if (Array.isArray(decodedToken.role)) {
         return decodedToken.role[0] || null;
       }
